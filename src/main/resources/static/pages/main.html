@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>YY</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+</head>
+<body class="hold-transition">
+<div id="app">
+    <input type="checkbox" id="check">
+    <label for="check">
+        <i class="fa fa-folder-open" id="btn"><span style="font-size: 32px">&nbsp&nbsp&nbsp共享网盘</span></i>
+        <i class="fa fa-times" id="cancel"></i>
+    </label>
+    <div id="header">
+        <div id="logout"><a href="http://localhost:8080/logout">退出登录</a></div>
+    </div>
+    <div id="side" class="sidebar">
+        <div class="top">
+            <h2 id="userName">{{username}}</h2>
+        </div>
+        <ul id="introduce">
+            <li><i class="fa fa-user-circle-o"></i>账号</li>
+            <li><i class="fa fa fa-address-card-o"></i>身份</li>
+            <li><i class="fa fa fa-phone"></i>电话</li>
+            <li><i class="fa fa-envelope"></i>邮箱</li>
+        </ul>
+        <ul id="center">
+            <li><a href="http://localhost:8080/index/index"><i class="fa fa-folder-open"></i>文件列表</a></li>
+        </ul>
+
+        <ul id="bottom">
+            <li><a href="http://localhost:8080/logout" style="text-align: right"><i class="fa fa fa-sun-o"></i>修改密码</a></li>
+            <li><a href="http://localhost:8080/logout"><i class="fa fa fa-sun-o"></i>退出登录</a></li>
+        </ul>
+    </div>
+    <br><br>
+    <div class="content">
+        <iframe id="index" src="index.html"></iframe>
+    </div>
+</div>
+</body>
+<!-- 引入组件库 -->
+<script src="../js/vue.js"></script>
+<script src="../plugins/elementui/index.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+<script src="../js/app.js"></script>
+</html>

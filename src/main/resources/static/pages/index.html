@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>YY</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+</head>
+<body class="hold-transition">
+<div id="app" >
+    <div class="app-container">
+        <div class="box">
+            <!--使用elementui中的输入框和按钮组件-->
+            <div class="filter-container">
+                <!--通过v-model实现数据双向绑定-->
+                <el-select placeholder="类型" v-model="search.type">
+                    <el-option label="文件名" value="fileName"></el-option>
+                    <el-option label="贡献者" value="contributor"></el-option>
+                    <el-option label="文件类型" value="type"></el-option>
+                </el-select>
+                <el-input placeholder="关键字" v-model="search.content" style="width: 200px;"
+                          class="filter-item"></el-input>
+                <el-button type="primary" round @click="searchFile()">搜索</el-button>
+                <el-button class="butT" @click="openUploadFrame()">上传文件</el-button>
+            </div>
+
+            <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                <el-table-column prop="fileId" align="center" label="序号" width="120"></el-table-column>
+                <el-table-column prop="fileName" label="文件名" align="center"></el-table-column>
+                <el-table-column prop="contributor" label="贡献者" align="center"></el-table-column>
+                <el-table-column prop="fileType" label="文件类型" align="center" width="100px"></el-table-column>
+                <el-table-column prop="downloadTimes" label="下载次数" align="center" width="120px"></el-table-column>
+                <el-table-column prop="uploadTime" label="上传时间" align="center"></el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="primary" size="mini" @click="openCheckFrame(scope.row)">查看</el-button>
+                        <el-button type="success" size="mini" @click="downloadFile(scope.row)">下载</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!--使用elementui中的分页组件-->
+            <div class="pagination-container">
+                <el-pagination
+                        class="pagiantion"
+                        @current-change="handleCurrentChange"
+                        :page-sizes="[5,10,15,20,50,100]"
+                        :page-size="pagination.pageSize"
+                        :total="pagination.total"
+                        layout="total, sizes, prev, pager, next, jumper">
+                </el-pagination>
+            </div>
+            <!-- 对话框 -->
+            <!--“上传文件”对话框-->
+            <div class="add-form">
+                <el-dialog title="上传文件" :visible.sync="dialogFormVisible_upload">
+                    <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="center" label-width="100px">
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="贡献者">
+                                    <el-input v-model="contributor"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col>
+                                <el-form-item label="备注">
+                                    <el-input v-model="formData.remarks" :autosize="{ minRows: 3, maxRows: 7 }"
+                                              type="textarea"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center" align="middle">
+
+                            <el-upload class="upload-demo" action="#" drag multiple
+                                       :headers="headers"
+                                       :auto-upload="true"
+                                       :limit=1
+                                       :http-request="chooseFile"
+                                       :on-change="handleChange">
+                                <i class="el-icon-upload"></i>
+                                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                            </el-upload>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="cancel()">取消</el-button>
+                        <el-button type="primary" @click="confirmUpload()">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+            <!-- “查看”对话框 -->
+            <div class="add-form">
+                <el-dialog title="查看" :visible.sync="dialogFormVisible_check">
+                    <el-form ref="dataEditForm" :model="formData" :rules="rules" label-position="right"
+                             label-width="100px">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="文件名:" prop="fileName">
+                                    <el-input disabled="disabled" v-model="formData.fileName"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="贡献者" prop="contributor">
+                                    <el-input disabled="disabled" v-model="formData.contributor"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="备注">
+                                    <el-input disabled="disabled" v-model="formData.remarks" type="textarea"
+                                              :autosize="{ minRows: 5, maxRows: 5 }"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer" align="center">
+                        <el-button type="primary" @click="closeIFrame()">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- 引入组件库 -->
+<script src="../js/vue.js"></script>
+<script src="../plugins/elementui/index.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+<script src="../js/app.js"></script>
+</html>
